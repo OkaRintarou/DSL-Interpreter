@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "DSL Interpreter": {
+      "commandName": "Project",
+      "commandLineArgs": "-f \"D:\\Zhangzs\\Documents\\visual studio workspace\\DSL Interpreter\\script.txt\" -u Root"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "environmentVariables": {},
+      "distributionName": ""
+    }
+  }
+}
