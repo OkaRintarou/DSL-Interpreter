@@ -47,6 +47,8 @@ namespace DSL_Interpreter
 
         private bool Continue { get; set; }
 
+        private bool isComplain = false;
+
         private string listenStr;
 
 
@@ -209,6 +211,12 @@ namespace DSL_Interpreter
             Continue = true;
             Console.Write(">>> ");
             listenStr = Console.ReadLine();
+            if (isComplain)
+                using (var sw = new StreamWriter($"Complain of {userName}.txt"))
+                {
+                    sw.WriteLine(listenStr);
+                }
+
         }
 
         private void Branch(string originalStr)
@@ -223,6 +231,7 @@ namespace DSL_Interpreter
                 if (Regex.Match(listenStr, keyword).Success)
                 {
                     Continue = false;
+                    isComplain = strs[^1] == "complainProc";
                     step.Run(strs[^1]);
                 }
             }

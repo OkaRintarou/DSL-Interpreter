@@ -2,7 +2,7 @@
   "profiles": {
     "DSL Interpreter": {
       "commandName": "Project",
-      "commandLineArgs": "-f \"D:\\Zhangzs\\Documents\\visual studio workspace\\DSL Interpreter\\script.txt\" -u Root"
+      "commandLineArgs": "-f \"D:\\Zhangzs\\Documents\\visual studio workspace\\DSL Interpreter\\script.txt\" -u Jack"
     },
     "WSL": {
       "commandName": "WSL2",
