@@ -5,6 +5,8 @@
     Branch "账单", billProc
     Silence silenceProc
     Default defaultProc
+
+# 一行测试用的注释
 Step complainProc
     Speak "您的意见是我们改进工作的动力，请问您还有什么补充?"
     Listen 5, 50
@@ -23,4 +25,9 @@ Step silenceProc
     Silence silenceProc
     Default defaultProc
 Step defaultProc
-    Exit
+    Speak "抱歉，我没能理解您的意思，请重说一遍"
+    Listen 5,10
+    Branch "投诉", complainProc
+    Branch "账单", billProc
+    Silence silenceProc
+    Default defaultProc
