@@ -10,11 +10,25 @@ namespace DSL_Interpreter
 {
     internal class Interpreter
     {
-        public Interpreter(string fileName, string userName)
+        public Interpreter(string fileName, string userName,string dataName)
         {
             try
             {
                 this.userName = userName;
+                using (StreamReader dataSr = new StreamReader(dataName))
+                {
+                    while (!dataSr.EndOfStream)
+                    {
+                        var line =dataSr.ReadLine();
+                        var strs=line.Split(',',StringSplitOptions.RemoveEmptyEntries);
+                        if (strs.Length == 2 && strs[0] == userName)
+                        {
+                            amount=decimal.Parse(strs[1]);
+                            break;
+                        }
+                    }
+                    dataSr.Close();
+                }
                 using StreamReader sr = new StreamReader(fileName);
                 while (!sr.EndOfStream)
                 {
@@ -31,6 +45,7 @@ namespace DSL_Interpreter
                 Console.WriteLine("脚本解析失败！");
                 Console.WriteLine($"脚本文件名：{fileName}");
                 Console.WriteLine($"用户名：{userName}");
+                Console.WriteLine($"数据文件名：{dataName}");
                 Console.Write($"出错行数：{lines}");
 
             }
@@ -215,6 +230,7 @@ namespace DSL_Interpreter
                 using (var sw = new StreamWriter($"Complain of {userName}.txt"))
                 {
                     sw.WriteLine(listenStr);
+                    sw.Close();
                 }
 
         }
