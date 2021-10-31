@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace DSL_Interpreter
 {
+    // 解释器类
     internal class Interpreter
     {
-        public Interpreter(string fileName, string userName,string dataName)
+        // 构造函数
+        public Interpreter(string fileName, string userName, string dataName)
         {
             try
             {
@@ -19,11 +19,11 @@ namespace DSL_Interpreter
                 {
                     while (!dataSr.EndOfStream)
                     {
-                        var line =dataSr.ReadLine();
-                        var strs=line.Split(',',StringSplitOptions.RemoveEmptyEntries);
+                        string line = dataSr.ReadLine();
+                        string[] strs = line.Split(',', StringSplitOptions.RemoveEmptyEntries);
                         if (strs.Length == 2 && strs[0] == userName)
                         {
-                            amount=decimal.Parse(strs[1]);
+                            amount = decimal.Parse(strs[1]);
                             break;
                         }
                     }
@@ -32,7 +32,7 @@ namespace DSL_Interpreter
                 using StreamReader sr = new StreamReader(fileName);
                 while (!sr.EndOfStream)
                 {
-                    var line = sr.ReadLine();
+                    string line = sr.ReadLine();
                     lines++;
                     Parser(line);
                 }
@@ -52,26 +52,34 @@ namespace DSL_Interpreter
 
         }
 
-        private int lines = 0;
+        // 记录当前行数
+        private readonly int lines = 0;
 
-        private string userName;
+        // 用户名
+        private readonly string userName;
 
-        private decimal amount = 0.00m;
+        // 账单
+        private readonly decimal amount = 0.00m;
 
+        // 记录当前分支，用于构建程序
         private List<Fun> lastList;
 
+        // 记录下列语句是否有效，为false时语句不执行
         private bool Continue { get; set; }
 
+        // 当前listen内容是否为投诉
         private bool isComplain = false;
 
+        // listen结果
         private string listenStr;
 
-
+        // 处理Speak
         private void Speak(string str)
         {
             Console.WriteLine(ParseSpeak(str));
         }
 
+        // 处理Speak的内容
         private string ParseSpeak(string originalStr)
         {
             StringBuilder sb = new StringBuilder();
@@ -83,35 +91,58 @@ namespace DSL_Interpreter
                     //init
                     case 0:
                         if (originalStr[i] == 'S')
+                        {
                             @case = 1;
+                        }
+
                         break;
                     //S
                     case 1:
                         if (originalStr[i] == 'p')
+                        {
                             @case = 2;
+                        }
                         else
+                        {
                             @case = 0;
+                        }
+
                         break;
                     //p
                     case 2:
                         if (originalStr[i] == 'e')
+                        {
                             @case = 3;
+                        }
                         else
+                        {
                             @case = 0;
+                        }
+
                         break;
                     //e
                     case 3:
                         if (originalStr[i] == 'a')
+                        {
                             @case = 4;
+                        }
                         else
+                        {
                             @case = 0;
+                        }
+
                         break;
                     //a
                     case 4:
                         if (originalStr[i] == 'k')
+                        {
                             @case = 6;
+                        }
                         else
+                        {
                             @case = 0;
+                        }
+
                         break;
 
                     //content-init
@@ -141,9 +172,14 @@ namespace DSL_Interpreter
                     //"
                     case 8:
                         if (originalStr[i] == '"')
+                        {
                             @case = 13;
+                        }
                         else
+                        {
                             sb.Append(originalStr[i]);
+                        }
+
                         break;
                     //+
                     case 9:
@@ -160,12 +196,18 @@ namespace DSL_Interpreter
                     //n
                     case 10:
                         if (originalStr[i] == 'a')
+                        {
                             @case = 11;
+                        }
+
                         break;
                     //a
                     case 11:
                         if (originalStr[i] == 'm')
+                        {
                             @case = 12;
+                        }
+
                         break;
                     //m
                     case 12:
@@ -193,17 +235,26 @@ namespace DSL_Interpreter
                     //a(amount)
                     case 14:
                         if (originalStr[i] == 'm')
+                        {
                             @case = 15;
+                        }
+
                         break;
                     //m(amount)
                     case 15:
                         if (originalStr[i] == 'o')
+                        {
                             @case = 16;
+                        }
+
                         break;
                     //o(amount)
                     case 16:
                         if (originalStr[i] == 'u')
+                        {
                             @case = 17;
+                        }
+
                         break;
                     //u(amount)
                     case 17:
@@ -220,30 +271,35 @@ namespace DSL_Interpreter
             return sb.ToString();
         }
 
-
+        // 处理Listen
         private void Listen(string timeout)
         {
             Continue = true;
             Console.Write(">>> ");
             listenStr = Console.ReadLine();
             if (isComplain)
-                using (var sw = new StreamWriter($"Complain of {userName}.txt"))
+            {
+                using (StreamWriter sw = new StreamWriter($"Complain of {userName}.txt"))
                 {
                     sw.WriteLine(listenStr);
                     sw.Close();
                 }
-
+            }
         }
 
+        // 处理Branch
         private void Branch(string originalStr)
         {
             if (!Continue)
+            {
                 return;
-            var strs = originalStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var match = Regex.Match(originalStr, @"""(?<keyword>[\s\S]*)""");
+            }
+
+            string[] strs = originalStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            Match match = Regex.Match(originalStr, @"""(?<keyword>[\s\S]*)""");
             if (match.Success)
             {
-                var keyword = match.Groups["keyword"].Value;
+                string keyword = match.Groups["keyword"].Value;
                 if (Regex.Match(listenStr, keyword).Success)
                 {
                     Continue = false;
@@ -254,28 +310,41 @@ namespace DSL_Interpreter
 
         }
 
+        // 处理Silence
         private void Silence(string @case)
         {
             if (!Continue)
+            {
                 return;
+            }
+
             if (listenStr == "")
+            {
                 step.Run(@case);
+            }
         }
 
+        // 处理Default
         private void Default(string @case)
         {
             if (!Continue)
+            {
                 return;
+            }
+
             step.Run(@case);
 
         }
 
-
+        // 解析脚本中的一行
         private void Parser(string line)
         {
-            var strs = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            string[] strs = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (strs.Length == 0)
+            {
                 return;
+            }
+
             switch (strs[0])
             {
                 case "Step":
@@ -301,29 +370,31 @@ namespace DSL_Interpreter
         }
 
 
-
+        // 解析程序的外部接口，开始运行
         public void Run()
         {
             step.Run();
         }
 
-
-        private Dictionary<string, List<Fun>> step = new Dictionary<string, List<Fun>>();
+        // 保存每一个分支的语句
+        private readonly Dictionary<string, List<Fun>> step = new Dictionary<string, List<Fun>>();
     }
 
-    class Fun
+    // 保存语句和参数
+    internal class Fun
     {
         public Action<string> Act { get; set; }
         public string Arg { get; set; }
 
     }
 
-    static class Extension
+    // 扩展类
+    internal static class Extension
     {
-
+        // 扩展Dictionary的功能
         public static void Run(this Dictionary<string, List<Fun>> step, string key = "welcome")
         {
-            foreach (var fun in step[key])
+            foreach (Fun fun in step[key])
             {
                 fun.Act(fun.Arg);
             }
