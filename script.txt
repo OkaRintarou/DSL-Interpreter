@@ -1,4 +1,5 @@
-﻿Step welcome
+﻿# 脚本入口
+Step welcome
     Speak $name + "您好，请问有什么可以帮您?"
     Listen 5, 10
     Branch "投诉", complainProc
@@ -6,17 +7,23 @@
     Silence silenceProc
     Default defaultProc
 
-# 一行测试用的注释
+# 投诉
 Step complainProc
     Speak "您的意见是我们改进工作的动力，请问您还有什么补充?"
     Listen 5, 50
     Default thanks
+
+# 致谢
 Step thanks
     Speak "感谢您的来电，再见"
     Exit
+
+# 查询账单
 Step billProc
     Speak "您的本月账单是" + $amount + "元，感谢您的来电，再见"
     Exit
+
+# 未识别到输入
 Step silenceProc
     Speak "听不清，请您大声一点可以吗"
     Listen 5, 3
@@ -24,6 +31,8 @@ Step silenceProc
     Branch "账单", billProc
     Silence silenceProc
     Default defaultProc
+
+# 不理解含义
 Step defaultProc
     Speak "抱歉，我没能理解您的意思，请重说一遍"
     Listen 5,10
