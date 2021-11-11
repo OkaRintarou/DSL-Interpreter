@@ -1,4 +1,4 @@
-﻿﻿﻿<div style="text-align:center">
+﻿﻿﻿﻿<div style="text-align:center">
 	<h1 >
 		DSL Interpreter
 	</h1>
@@ -15,7 +15,7 @@
 ## 编程环境及运行环境
 
 - Visual Studio 2022 Preview
-- .NET core 3.1（长期支持）
+- .NET 6（经测试在.NET core 3.1上也能正确工作，可满足跨平台需求）
 
 ## 用法
 
