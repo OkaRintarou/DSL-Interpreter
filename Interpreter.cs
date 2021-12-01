@@ -284,6 +284,7 @@ namespace DSL_Interpreter
                     sw.WriteLine(listenStr);
                     sw.Close();
                 }
+                isComplain = false;
             }
         }
 
@@ -302,9 +303,9 @@ namespace DSL_Interpreter
                 string keyword = match.Groups["keyword"].Value;
                 if (Regex.Match(listenStr, keyword).Success)
                 {
-                    Continue = false;
                     isComplain = strs[^1] == "complainProc";
                     step.Run(strs[^1]);
+                    Continue = false;
                 }
             }
 
