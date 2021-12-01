@@ -322,6 +322,7 @@ namespace DSL_Interpreter
             if (listenStr == "")
             {
                 step.Run(@case);
+                Continue = false;
             }
         }
 
@@ -334,6 +335,7 @@ namespace DSL_Interpreter
             }
 
             step.Run(@case);
+            Continue = false;
 
         }
 
