@@ -14,8 +14,10 @@ namespace DSL_Interpreter
         {
             try
             {
+
                 this.userName = userName;
-                using (StreamReader dataSr = new StreamReader(dataName))
+                // 查找用户账单
+                using (StreamReader dataSr = new(dataName))
                 {
                     while (!dataSr.EndOfStream)
                     {
@@ -29,7 +31,8 @@ namespace DSL_Interpreter
                     }
                     dataSr.Close();
                 }
-                using StreamReader sr = new StreamReader(fileName);
+                // 解析脚本
+                using StreamReader sr = new(fileName);
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
@@ -40,16 +43,8 @@ namespace DSL_Interpreter
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine("脚本解析失败！");
-                Console.WriteLine($"脚本文件名：{fileName}");
-                Console.WriteLine($"用户名：{userName}");
-                Console.WriteLine($"数据文件名：{dataName}");
-                Console.Write($"出错行数：{lines}");
-
+                throw new MyException(ex, fileName, userName, dataName, lines);
             }
-
         }
 
         // 记录当前行数
@@ -271,12 +266,13 @@ namespace DSL_Interpreter
             return sb.ToString();
         }
 
-        // 处理Listen
+        // 处理Listen（参数暂时无效，原因见README）
         private void Listen(string timeout)
         {
             Continue = true;
             Console.Write(">>> ");
             listenStr = Console.ReadLine();
+            // 是否为投诉内容
             if (isComplain)
             {
                 using (StreamWriter sw = new StreamWriter($"Complain of {userName}.txt"))
@@ -291,12 +287,14 @@ namespace DSL_Interpreter
         // 处理Branch
         private void Branch(string originalStr)
         {
+            // 上行脚本已经发生跳转则跳过以下分支
             if (!Continue)
             {
                 return;
             }
 
             string[] strs = originalStr.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            // 匹配关键词
             Match match = Regex.Match(originalStr, @"""(?<keyword>[\s\S]*)""");
             if (match.Success)
             {
@@ -314,11 +312,13 @@ namespace DSL_Interpreter
         // 处理Silence
         private void Silence(string @case)
         {
+            // 若Branch已经发生跳转则跳过
             if (!Continue)
             {
                 return;
             }
 
+            // 若输入串为空则认为用户保持静默
             if (listenStr == "")
             {
                 step.Run(@case);
@@ -329,6 +329,7 @@ namespace DSL_Interpreter
         // 处理Default
         private void Default(string @case)
         {
+            // Branch或Silence发生跳转则不进入Default
             if (!Continue)
             {
                 return;
@@ -348,6 +349,7 @@ namespace DSL_Interpreter
                 return;
             }
 
+            // 识别该行的第一个关键词，无效的关键词会导致该行被略过
             switch (strs[0])
             {
                 case "Step":
@@ -383,7 +385,7 @@ namespace DSL_Interpreter
         private readonly Dictionary<string, List<Fun>> step = new Dictionary<string, List<Fun>>();
     }
 
-    // 保存语句和参数
+    // 保存函数及参数
     internal class Fun
     {
         public Action<string> Act { get; set; }
@@ -397,6 +399,7 @@ namespace DSL_Interpreter
         // 扩展Dictionary的功能
         public static void Run(this Dictionary<string, List<Fun>> step, string key = "welcome")
         {
+            // 遍历当前分支的语句并执行
             foreach (Fun fun in step[key])
             {
                 fun.Act(fun.Arg);
@@ -404,5 +407,36 @@ namespace DSL_Interpreter
         }
 
 
+    }
+
+    class MyException : Exception
+    {
+        public MyException(Exception ex, string fileName, string userName, string dataName, int lines)
+        {
+            Message = ex.Message;
+            StackTrace = ex.StackTrace;
+            FileName = fileName;
+            UserName = userName;
+            DataName = dataName;
+            Lines = lines;
+        }
+        public new string Message { get; set; }
+        public new string StackTrace { get; set; }
+
+        public string FileName { get; set; }
+        public string UserName { get; set; }
+        public int Lines { get; set; }
+        public string DataName { get; set; }
+        public void ShowMessage()
+        {
+            Console.WriteLine(Message);
+            Console.WriteLine(StackTrace);
+            Console.WriteLine("脚本解析失败！");
+            Console.WriteLine($"脚本文件名：{FileName}");
+            Console.WriteLine($"用户名：{UserName}");
+            Console.WriteLine($"数据文件名：{DataName}");
+            Console.WriteLine($"出错行数：{Lines}");
+
+        }
     }
 }

@@ -32,9 +32,23 @@ namespace DSL_Interpreter
             {
                 dataName = args[dataNum + 1];
             }
+            try
+            {
+                Interpreter interpreter = new Interpreter(fileName, userName, dataName);
+                interpreter.Run();
+            }
+            catch (MyException ex)
+            {
 
-            Interpreter interpreter = new Interpreter(fileName, userName, dataName);
-            interpreter.Run();
+                ex.ShowMessage();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+            Console.WriteLine("程序运行结束，按任意键退出");
+            Console.ReadKey();
         }
     }
 }

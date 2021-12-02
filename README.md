@@ -1,4 +1,4 @@
-﻿﻿﻿﻿<div style="text-align:center">
+﻿﻿﻿﻿﻿<div style="text-align:center">
 	<h1 >
 		DSL Interpreter
 	</h1>
@@ -14,7 +14,7 @@
 
 ## 编程环境及运行环境
 
-- Visual Studio 2022 Preview
+- Visual Studio 2022 Enterprise
 - .NET 6（经测试在.NET core 3.1上也能正确工作，可满足跨平台需求）
 
 ## 用法
@@ -73,7 +73,7 @@ Step defaultProc
 
 - `Step` 指定分支名，该脚本语言主体为分支，`Step` 后接分支名，直至遇见下一个`Step`均为当前分支内容。
 - `Speak` 向控制台输出信息，`""`中为输出字符串，可使用`+`拼接内置变量用户名`$name`和账单`$amount`。
-- `Listen` 接收用户输入，由`,`分开的两个参数第一个为最低语音时长，第二个参数为最长语音时长，在本程序由控制台输入模拟，平台受限，.NET core不允许Windows上外部结束未完成线程，因此无法实现定时取消。由用户输入空行模拟用户保持沉默超时。
+- `Listen` 接收用户输入，由`,`分开的两个参数第一个为最低语音时长，第二个参数为最长语音时长，在本程序由控制台输入模拟，平台受限，.NET不允许Windows上外部结束未完成线程，因此无法实现定时取消。由用户输入空行模拟用户保持沉默超时，且`Listen`的参数没有实际效果。
 - `Branch` 分支跳转语句，需要接在`Listen`后，第一个由`""`括起的参数为`Listen`结果的关键词，若匹配成功将会进入`,`后第二个参数指定的`Step`。
 - `Silence` 类似`Branch`，需放在`Branch`后，作为接收空串的分支进入，参数即为分支名。
 - `Default` 类似`Branch`，一般放在`Silence`后，作为默认分支入口，后接默认分支名，应用中多为无法理解用户含义。
