@@ -267,7 +267,7 @@ namespace DSL_Interpreter
         }
 
         // 处理Listen（参数暂时无效，原因见README）
-        private void Listen(string timeout)
+        private void Listen(string timeOut)
         {
             Continue = true;
             Console.Write(">>> ");
@@ -409,7 +409,8 @@ namespace DSL_Interpreter
 
     }
 
-    class MyException : Exception
+    // 自定义异常类
+    internal class MyException : Exception
     {
         public MyException(Exception ex, string fileName, string userName, string dataName, int lines)
         {
@@ -422,11 +423,12 @@ namespace DSL_Interpreter
         }
         public new string Message { get; set; }
         public new string StackTrace { get; set; }
-
         public string FileName { get; set; }
         public string UserName { get; set; }
         public int Lines { get; set; }
         public string DataName { get; set; }
+
+        // 打印错误信息
         public void ShowMessage()
         {
             Console.WriteLine(Message);

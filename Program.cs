@@ -15,6 +15,7 @@ namespace DSL_Interpreter
             string fileName = "script.txt";
             string userName = "Demo";
             string dataName = "data.txt";
+
             int fileNum = Array.FindIndex(args, (s) => s == "-f");
             if (fileNum != -1 && fileNum + 1 < args.Length)
             {
@@ -32,6 +33,7 @@ namespace DSL_Interpreter
             {
                 dataName = args[dataNum + 1];
             }
+
             try
             {
                 Interpreter interpreter = new Interpreter(fileName, userName, dataName);
@@ -47,8 +49,9 @@ namespace DSL_Interpreter
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
             }
-            Console.WriteLine("程序运行结束，按任意键退出");
-            Console.ReadKey();
+
+            Console.WriteLine("程序运行结束，按Enter退出");
+            Console.Read();
         }
     }
 }
