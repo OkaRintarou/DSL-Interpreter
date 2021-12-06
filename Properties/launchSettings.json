@@ -2,7 +2,7 @@
   "profiles": {
     "DSL Interpreter": {
       "commandName": "Project",
-      "commandLineArgs": "-d C:\\Users\\okari\\Source\\Repos\\dsl-interpreter\\data.txt -f C:\\Users\\okari\\Source\\Repos\\dsl-interpreter\\script.txt -u Jack"
+      "commandLineArgs": "-d C:\\Users\\okari\\Source\\Repos\\dsl-interpreter\\data.txt -f C:\\Users\\okari\\Source\\Repos\\dsl-interpreter\\script1.txt -u Jack"
     },
     "WSL": {
       "commandName": "WSL2",
