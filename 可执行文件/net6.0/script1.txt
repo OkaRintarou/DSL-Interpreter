@@ -61,5 +61,11 @@ Step talk
     Branch "投诉", complainProc
     Branch "账单", billProc
     Branch "天气", weather
+    Branch "退出", exit
     Silence talk
     Default defaultProc
+
+# 退出
+Step exit
+    Speak "感谢您的来电，再见"
+    Exit
